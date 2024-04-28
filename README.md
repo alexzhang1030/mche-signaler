@@ -1,3 +1,8 @@
-# Nitro starter
+# mche signaler
 
-Look at the [nitro quick start](https://nitro.unjs.io/guide#quick-start) to learn more how to get started.
+A signaling server implementation of [`mche`](https://github.com/alexzhang1030/mche).
+
+```bash
+$ pnpm i
+$ pnpm dev --host
+```
