@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nitro build",
+    "dev": "nitro dev",
+    "prepare": "nitro prepare",
+    "preview": "node .output/server/index.mjs"
+  },
+  "devDependencies": {
+    "crossws": "^0.2.4",
+    "destr": "^2.0.3",
+    "nitropack": "latest"
+  }
+}
