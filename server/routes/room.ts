@@ -2,7 +2,13 @@ import { Message, Peer } from "crossws";
 import { destr } from "destr";
 
 const map = new Map</* roomId */ string, Map</* userId */ string, Peer<any>>>();
-const wsMap = new Map</* ws id */ string, /* roomId */ string>();
+const wsMap = new Map<
+  /* ws id */ string,
+  /* roomId */ {
+    roomId: string;
+    userId: string;
+  }
+>();
 
 enum EventType {
   OPEN = "open",
@@ -39,7 +45,10 @@ export default defineWebSocketHandler({
     }
     if (payload.event === EventType.REGISTER) {
       // payload.data: { roomId: string, userId: string }
-      const { roomId, userId } = JSON.parse(payload.data);
+      const { roomId, userId } = JSON.parse(payload.data) as {
+        roomId: string;
+        userId: string;
+      };
       const hasRoom = map.has(roomId);
       if (!hasRoom) {
         map.set(roomId, new Map());
@@ -54,11 +63,15 @@ export default defineWebSocketHandler({
           })
         );
       });
-      wsMap.set(ws.id, roomId);
+      wsMap.set(ws.id, {
+        roomId,
+        userId,
+      });
       room.set(ws.id, ws);
       return;
     }
-    const room = map.get(wsMap.get(ws.id));
+    const { roomId } = wsMap.get(ws.id);
+    const room = map.get(roomId);
     room.forEach((peer) => {
       if (peer !== ws) {
         peer.send(message.text());
@@ -66,15 +79,16 @@ export default defineWebSocketHandler({
     });
   },
   close: (ws) => {
-    const roomId = wsMap.get(ws.id);
+    const { roomId, userId } = wsMap.get(ws.id);
     const room = map.get(roomId);
     room.delete(ws.id);
+    wsMap.delete(ws.id);
     room.forEach((peer) => {
       peer.send(
         buildMessage(EventType.CLOSE, {
           roomId,
           data: {
-            id: ws.id,
+            id: userId,
           },
         })
       );
