@@ -71,6 +71,8 @@ export default defineWebSocketHandler({
       room.set(ws.id, ws);
       return;
     }
+
+    broadcastToPeers(ws, message);
   },
   close: (ws) => {
     const { roomId, userId } = wsMap.get(ws.id);
