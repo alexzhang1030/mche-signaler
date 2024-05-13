@@ -11,6 +11,6 @@
     "nitropack": "latest"
   },
   "dependencies": {
-    "mche": "^0.8.5"
+    "mche": "^0.8.6"
   }
 }

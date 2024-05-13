@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   mche:
-    specifier: ^0.8.5
-    version: 0.8.5
+    specifier: ^0.8.6
+    version: 0.8.6
 
 devDependencies:
   crossws:
@@ -1891,8 +1891,8 @@ packages:
       semver: 6.3.1
     dev: true
 
-  /mche@0.8.5:
-    resolution: {integrity: sha512-RReyUtR2fth7sPteHEejVANtrS4x1+9KBLFZq8CqPksyPp7f571L1fPizy78T42oJrTJJ6CXX+0os7WVuFdJxw==}
+  /mche@0.8.6:
+    resolution: {integrity: sha512-0ZMfIMkw5KYloO91zZ0N5biG8/7yhZdshiPFmS7TYC4ihE5jXdzaU7WKhQKvGjhpKbg8IbWZpvq0uiTmWZ8Syw==}
     dependencies:
       wshe: 2.1.6
     dev: false
