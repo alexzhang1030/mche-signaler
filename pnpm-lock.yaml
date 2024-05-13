@@ -1,12 +1,18 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  mche:
+    specifier: ^0.8.5
+    version: 0.8.5
+
 devDependencies:
   crossws:
     specifier: ^0.2.4
     version: 0.2.4
-  destr:
-    specifier: ^2.0.3
-    version: 2.0.3
   nitropack:
     specifier: latest
     version: 2.9.5
@@ -1212,7 +1218,6 @@ packages:
 
   /destr@2.0.3:
     resolution: {integrity: sha512-2N3BOUU4gYMpTP24s5rF5iP7BDr7uNTCs4ozw3kf/eKfvWSIu93GEBi5m427YoyJoeOzQ5smuu4nNAPGb8idSQ==}
-    dev: true
 
   /destroy@1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
@@ -1886,6 +1891,12 @@ packages:
       semver: 6.3.1
     dev: true
 
+  /mche@0.8.5:
+    resolution: {integrity: sha512-RReyUtR2fth7sPteHEejVANtrS4x1+9KBLFZq8CqPksyPp7f571L1fPizy78T42oJrTJJ6CXX+0os7WVuFdJxw==}
+    dependencies:
+      wshe: 2.1.6
+    dev: false
+
   /merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
     dev: true
@@ -1970,6 +1981,10 @@ packages:
       minipass: 3.3.6
       yallist: 4.0.0
     dev: true
+
+  /mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
+    dev: false
 
   /mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
@@ -2968,6 +2983,13 @@ packages:
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
+
+  /wshe@2.1.6:
+    resolution: {integrity: sha512-QvopwWIO7x++OT+mMECS4qqUTYmI3cW/vK+q5BdIdDkkkZf2CHJvZrJz3Jt5f3pEE5NBKKN+kaHUybcCMGMKAA==}
+    dependencies:
+      destr: 2.0.3
+      mitt: 3.0.1
+    dev: false
 
   /y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}

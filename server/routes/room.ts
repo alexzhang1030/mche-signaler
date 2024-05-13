@@ -1,5 +1,5 @@
 import { Message, Peer } from "crossws";
-import { destr } from "destr";
+import { withHandleMetaEvent } from "mche/server";
 
 const map = new Map</* roomId */ string, Map</* userId */ string, Peer<any>>>();
 const wsMap = new Map<
@@ -10,45 +10,50 @@ const wsMap = new Map<
   }
 >();
 
-enum EventType {
-  OPEN = "open",
-  CLOSE = "close",
+const {
+  getHeartbeatResponse,
+  isHeartbeatRequestParsed,
+  getMetaCloseResponse,
+  getMetaRegisterAcceptResponse,
+  getMetaRegisterResponse,
+  getMetaRegisterEventPayload,
+  isMetaRegisterEvent,
+  tryParseMetaEvent,
+} = withHandleMetaEvent();
 
-  PING = "ping",
-  PONG = "pong",
-
-  REGISTER = "register",
-}
-
-interface EventPayload {
-  event: EventType;
-  data: any;
-}
-
-function getPayload(message: Message) {
-  return destr<EventPayload>(message.text());
-}
-
-function buildMessage(event: EventType, data: any) {
-  return JSON.stringify({
-    event,
-    data,
+function broadcastToPeers(ws: Peer, message: Message) {
+  if (!wsMap.has(ws.id)) return;
+  const { roomId } = wsMap.get(ws.id);
+  const room = map.get(roomId);
+  room.forEach((peer) => {
+    if (peer !== ws) {
+      peer.send(message.isBinary ? message.rawData : message.text());
+    }
   });
 }
 
 export default defineWebSocketHandler({
   message: (ws, message) => {
-    const payload = getPayload(message);
-    if (payload.event === EventType.PING) {
-      ws.send(buildMessage(EventType.PONG, "pong"));
+    if (message.isBinary) {
+      broadcastToPeers(ws, message);
       return;
     }
-    if (payload.event === EventType.REGISTER) {
-      // payload.data: { roomId: string, userId: string }
-      const { roomId, userId } = JSON.parse(payload.data) as {
-        roomId: string;
-        userId: string;
-      };
+    const [data, success] = tryParseMetaEvent(message.text());
+    console.log({ data, success });
+    if (!success) {
+      broadcastToPeers(ws, message);
+      return;
+    }
+
+    // handle heartbeat
+    if (isHeartbeatRequestParsed(data)) {
+      ws.send(getHeartbeatResponse());
+      return;
+    }
+
+    // handle register
+    if (isMetaRegisterEvent(data)) {
+      const { roomId, userId } = getMetaRegisterEventPayload(data);
       const hasRoom = map.has(roomId);
       if (!hasRoom) {
         map.set(roomId, new Map());
@@ -56,27 +61,16 @@ export default defineWebSocketHandler({
       const room = map.get(roomId);
       room.forEach((peer) => {
         // send to all peers in the room
-        peer.send(
-          buildMessage(EventType.OPEN, {
-            roomId: roomId,
-            data: [{ id: userId }],
-          })
-        );
+        peer.send(getMetaRegisterResponse(roomId, userId));
       });
       wsMap.set(ws.id, {
         roomId,
         userId,
       });
+      ws.send(getMetaRegisterAcceptResponse(roomId, userId));
       room.set(ws.id, ws);
       return;
     }
-    const { roomId } = wsMap.get(ws.id);
-    const room = map.get(roomId);
-    room.forEach((peer) => {
-      if (peer !== ws) {
-        peer.send(message.text());
-      }
-    });
   },
   close: (ws) => {
     const { roomId, userId } = wsMap.get(ws.id);
@@ -84,14 +78,7 @@ export default defineWebSocketHandler({
     room.delete(ws.id);
     wsMap.delete(ws.id);
     room.forEach((peer) => {
-      peer.send(
-        buildMessage(EventType.CLOSE, {
-          roomId,
-          data: {
-            id: userId,
-          },
-        })
-      );
+      peer.send(getMetaCloseResponse(roomId, userId));
     });
   },
 });

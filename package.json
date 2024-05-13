@@ -8,7 +8,9 @@
   },
   "devDependencies": {
     "crossws": "^0.2.4",
-    "destr": "^2.0.3",
     "nitropack": "latest"
+  },
+  "dependencies": {
+    "mche": "^0.8.5"
   }
 }
