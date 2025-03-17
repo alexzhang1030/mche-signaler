@@ -12,5 +12,6 @@
   },
   "dependencies": {
     "mche": "^0.8.6"
-  }
+  },
+  "packageManager": "pnpm@10.6.3"
 }

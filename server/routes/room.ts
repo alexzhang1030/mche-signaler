@@ -34,7 +34,6 @@ function broadcastToPeers(ws: Peer, message: Message) {
 
 export default defineWebSocketHandler({
   message: (ws, message) => {
-    console.log("message---", message.text(), "isBinary??", message.isBinary);
     if (message.isBinary) {
       broadcastToPeers(ws, message);
       return;
